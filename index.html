@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>강원 나이스 현장지원단(고) 질의응답 도우미</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <style>
+        :root {
+            --primary-color: #3182f6;
+            --primary-hover: #1b64da;
+            --bg-color: #f2f4f6;
+            --card-bg: #ffffff;
+            --text-main: #191f28;
+            --text-sub: #4e5968;
+            --input-bg: #f9fafb;
+            --border-color: #e5e8eb;
+            --info-bg: #e8f3ff;
+            --info-text: #1b64da;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 768px; /* 기존 640px에서 768px로 확장하여 가로 폭 확보 */
+            padding: 40px 32px;
+            border-radius: 24px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+            position: relative;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+
+        .info-box {
+            background-color: var(--info-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .info-box-title {
+            color: var(--info-text);
+            font-size: 15px;
+            font-weight: 700;
+            margin: 0 0 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .info-box ol {
+            margin: 0;
+            padding-left: 20px;
+            color: var(--text-sub);
+            font-size: 14px;
+            line-height: 1.6;
+            word-break: keep-all; /* 한글 단어가 중간에 끊어지지 않도록 보호 */
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .info-box li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 입력창 영역 컨테이너 */
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 16px;
+            padding-right: 44px;
+            border: 1px solid var(--border-color);
+            background-color: var(--input-bg);
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            color: var(--text-main);
+            resize: none;
+            min-height: 120px;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+            line-height: 1.5;
+            overflow-y: hidden;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: var(--card-bg);
+            box-shadow: 0 0 0 3px rgba(49, 130, 246, 0.1);
+        }
+
+        /* 입력창 초기화 (Clear) 버튼 */
+        .btn-clear {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #e5e8eb;
+            color: #8b95a1;
+            border: none;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 0;
+            transition: background-color 0.2s;
+        }
+
+        .btn-clear:hover {
+            background-color: #d1d6db;
+            color: #4e5968;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        button, .link-btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background-color: var(--input-bg);
+            color: var(--text-sub);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--border-color);
+            color: var(--text-main);
+        }
+
+        #result-section {
+            display: none;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .result-fade-in {
+            animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #output-prompt {
+            min-height: 240px;
+            background-color: var(--input-bg);
+            color: var(--text-sub);
+            line-height: 1.6;
+            padding-right: 16px;
+        }
+
+        .copy-btn-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 12px;
+        }
+
+        .btn-copy {
+            background-color: var(--text-main);
+            color: white;
+            flex: none;
+            padding: 12px 24px;
+            font-size: 14px;
+        }
+
+        .btn-copy:hover {
+            background-color: #000000;
+        }
+
+        /* Toss 스타일 Toast 알림 팝업 */
+        .toast {
+            position: fixed;
+            bottom: -60px;
+            left: 51%;
+            transform: translateX(-50%);
+            background-color: rgba(25, 31, 40, 0.92);
+            color: #ffffff;
+            padding: 14px 28px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 9999;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            bottom: 32px;
+            opacity: 1;
+        }
+
+        /* 모바일 대응 (반응형 레이아웃 개선) */
+        @media (max-width: 600px) {
+            .button-group {
+                flex-direction: column; /* 화면이 좁아지면 버튼을 세로로 배치 */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>강원 나이스 현장지원단(고)<br>질의응답 도우미</h1>
+        
+        <div class="info-box">
+            <div class="info-box-title">💡 이용 방법</div>
+            <ol>
+                <li>질문하신 선생님의 <strong>질문을 요약해 아래에 입력</strong>하고 [확인]을 누릅니다.</li>
+                <li>생성된 프롬프트를 복사한 뒤, <strong>[NotebookLM 링크]</strong>로 이동합니다. (2025년 나이스광장 데이터 학습 완료)</li>
+                <li>NotebookLM에 프롬프트를 넣으면, AI가 답변과 함께 <strong>출처(질의번호 및 제목)</strong>를 찾아줍니다.</li>
+                <li>안내받은 출처 번호로 나이스광장에서 <strong>실제 질의를 빠르게 팩트체크</strong> 해보세요!</li>
+            </ol>
+        </div>
+
+        <div class="input-wrapper">
+            <textarea id="user-question" placeholder="이곳에 나이스 관련 질문을 입력해주세요."></textarea>
+            <button id="clear-button" class="btn-clear" title="입력 내용 지우기">✕</button>
+        </div>
+
+        <div class="button-group">
+            <button id="generate-button" class="btn-primary">확인</button>
+            <a href="https://notebooklm.google.com/notebook/51be61d0-127d-4688-bb8b-52cefe155d0d" target="_blank" class="link-btn btn-secondary">나이스광장 질의응답 NotebookLM 링크</a>
+        </div>
+
+        <div id="result-section">
+            <h1 style="font-size: 18px;">생성된 프롬프트</h1>
+            <div class="input-wrapper" style="margin-bottom: 0;">
+                <textarea id="output-prompt" readonly></textarea>
+            </div>
+            <div class="copy-btn-container">
+                <button id="copy-button" class="btn-copy">복사하기</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container" class="toast"></div>
+
+    <script>
+        const userQuestion = document.getElementById('user-question');
+        const clearButton = document.getElementById('clear-button');
+        const generateButton = document.getElementById('generate-button');
+        const copyButton = document.getElementById('copy-button');
+        const outputPrompt = document.getElementById('output-prompt');
+        const resultSection = document.getElementById('result-section');
+        const toastContainer = document.getElementById('toast-container');
+
+        const promptTemplate = `#역할
+소스의 질의응답 데이터중에서 주어진 질의내용에 대한 해결책을 제시해주는 내용을 찾아서 정리해서 알려주는 해결사
+
+#지시사항
+주어진 질의내용을 면밀하게 파악하고, 질의한 내용의 핵심을 정리한 뒤, 문제를 해결하는 해결책을 다음과같은 틀에따라 단계적으로 작성해주세요.
+
+#맥락
+배경 및 제약 : 질문한 사람에게 최대한 친절하게 답변해야하며, 글자 수 제한은 없습니다.
+
+#출력형식
+1.문제 원인
+(문제를 정의하고, 문제의 원인을 작성한다)
+
+2.해결 방법
+Step 1.~
+Step 2.~
+Step 3.~
+
+3.주의 사항
+(주의사항이 있으면 작성한다)
+답을 할 때는 질문번호, 질문제목도 같이 출처를 언급하면서 답변해주세요.
+
+4. 참고 출처
+질문번호 QN00334328 / 질문제목 : ~~
+
+#질의내용
+`;
+
+        function showToast(message) {
+            toastContainer.textContent = message;
+            toastContainer.classList.add('show');
+            setTimeout(() => {
+                toastContainer.classList.remove('show');
+            }, 2500);
+        }
+
+        function autoResizeTextarea(element) {
+            element.style.height = 'auto';
+            element.style.height = element.scrollHeight + 'px';
+        }
+
+        userQuestion.addEventListener('input', function() {
+            autoResizeTextarea(this);
+            clearButton.style.display = this.value.trim() ? 'flex' : 'none';
+        });
+
+        clearButton.addEventListener('click', function() {
+            userQuestion.value = '';
+            userQuestion.style.height = 'auto';
+            this.style.display = 'none';
+            
+            resultSection.style.display = 'none';
+            resultSection.classList.remove('result-fade-in');
+            userQuestion.focus();
+            showToast("입력창이 초기화되었습니다.");
+        });
+
+        generateButton.addEventListener('click', function() {
+            const userInput = userQuestion.value;
+            
+            if (!userInput.trim()) {
+                showToast("질문 내용을 먼저 입력해주세요. 😉");
+                userQuestion.focus();
+                return;
+            }
+
+            const finalPrompt = promptTemplate + userInput;
+            outputPrompt.value = finalPrompt;
+            
+            resultSection.style.display = 'block';
+            resultSection.classList.add('result-fade-in');
+            
+            autoResizeTextarea(outputPrompt);
+            
+            resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            showToast("프롬프트가 아래에 성공적으로 생성되었습니다!");
+        });
+
+        copyButton.addEventListener('click', function() {
+            if (!outputPrompt.value) return;
+
+            navigator.clipboard.writeText(outputPrompt.value).then(() => {
+                showToast("📋 클립보드 복사 완료! NotebookLM에 붙여넣어 보세요.");
+            }).catch(err => {
+                console.error('복사 실패:', err);
+                outputPrompt.select();
+                document.execCommand('copy');
+                showToast("📋 프롬프트가 복사되었습니다.");
+            });
+        });
+    </script>
+</body>
+</html>
