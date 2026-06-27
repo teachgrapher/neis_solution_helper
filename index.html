@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>강원 나이스 현장지원단(고) 질의응답 도우미</title>
+    <!-- Pretendard 폰트 불러오기 -->
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <style>
         :root {
@@ -35,7 +36,7 @@
         .container {
             background-color: var(--card-bg);
             width: 100%;
-            max-width: 768px; /* 기존 640px에서 768px로 확장하여 가로 폭 확보 */
+            max-width: 768px;
             padding: 40px 32px;
             border-radius: 24px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
@@ -73,7 +74,7 @@
             color: var(--text-sub);
             font-size: 14px;
             line-height: 1.6;
-            word-break: keep-all; /* 한글 단어가 중간에 끊어지지 않도록 보호 */
+            word-break: keep-all;
         }
 
         .info-box li {
@@ -84,7 +85,6 @@
             margin-bottom: 0;
         }
 
-        /* 입력창 영역 컨테이너 */
         .input-wrapper {
             position: relative;
             margin-bottom: 16px;
@@ -115,7 +115,6 @@
             box-shadow: 0 0 0 3px rgba(49, 130, 246, 0.1);
         }
 
-        /* 입력창 초기화 (Clear) 버튼 */
         .btn-clear {
             position: absolute;
             top: 14px;
@@ -181,53 +180,25 @@
             color: var(--text-main);
         }
 
-        #result-section {
-            display: none;
-            margin-top: 32px;
-            padding-top: 32px;
-            border-top: 1px solid var(--border-color);
+        /* 💡 추가된 부분: 버튼 강조(Pulse) 애니메이션 */
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0 0 rgba(49, 130, 246, 0.5); }
+            70% { box-shadow: 0 0 0 12px rgba(49, 130, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(49, 130, 246, 0); }
         }
 
-        .result-fade-in {
-            animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        #output-prompt {
-            min-height: 240px;
-            background-color: var(--input-bg);
-            color: var(--text-sub);
-            line-height: 1.6;
-            padding-right: 16px;
-        }
-
-        .copy-btn-container {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 12px;
-        }
-
-        .btn-copy {
-            background-color: var(--text-main);
-            color: white;
-            flex: none;
-            padding: 12px 24px;
-            font-size: 14px;
-        }
-
-        .btn-copy:hover {
-            background-color: #000000;
+        .btn-highlight {
+            animation: pulse-glow 1.5s infinite;
+            background-color: var(--info-bg) !important;
+            color: var(--primary-color) !important;
+            border: 1px solid var(--primary-color) !important;
         }
 
         /* Toss 스타일 Toast 알림 팝업 */
         .toast {
             position: fixed;
-            bottom: -60px;
-            left: 51%;
+            bottom: -80px;
+            left: 50%;
             transform: translateX(-50%);
             background-color: rgba(25, 31, 40, 0.92);
             color: #ffffff;
@@ -248,10 +219,15 @@
             opacity: 1;
         }
 
-        /* 모바일 대응 (반응형 레이아웃 개선) */
         @media (max-width: 600px) {
             .button-group {
-                flex-direction: column; /* 화면이 좁아지면 버튼을 세로로 배치 */
+                flex-direction: column;
+            }
+            .toast {
+                white-space: normal;
+                width: 80%;
+                text-align: center;
+                line-height: 1.5;
             }
         }
     </style>
@@ -265,8 +241,8 @@
             <div class="info-box-title">💡 이용 방법</div>
             <ol>
                 <li>질문하신 선생님의 <strong>질문을 요약해 아래에 입력</strong>하고 [확인]을 누릅니다.</li>
-                <li>생성된 프롬프트를 복사한 뒤, <strong>[NotebookLM 링크]</strong>로 이동합니다. (2025년 이후 나이스광장 질의응답 데이터 기반)</li>
-                <li>NotebookLM에 프롬프트를 넣으면, AI가 답변과 함께 <strong>출처(질의번호 및 제목)</strong>를 찾아줍니다.</li>
+                <li>프롬프트가 자동으로 복사되면, <strong>[나이스광장 질의응답 NotebookLM 링크]</strong> 버튼을 누릅니다. (2025년 데이터 학습 완료)</li>
+                <li>NotebookLM에 복사된 프롬프트를 붙여넣으면, AI가 답변과 함께 <strong>출처(질의번호 및 제목)</strong>를 찾아줍니다.</li>
                 <li>안내받은 출처 번호로 나이스광장에서 <strong>실제 질의를 빠르게 팩트체크</strong> 해보세요!</li>
             </ol>
         </div>
@@ -278,30 +254,20 @@
 
         <div class="button-group">
             <button id="generate-button" class="btn-primary">확인</button>
-            <a href="https://notebooklm.google.com/notebook/51be61d0-127d-4688-bb8b-52cefe155d0d" target="_blank" class="link-btn btn-secondary">나이스광장 질의응답 NotebookLM 링크</a>
-        </div>
-
-        <div id="result-section">
-            <h1 style="font-size: 18px;">생성된 프롬프트</h1>
-            <div class="input-wrapper" style="margin-bottom: 0;">
-                <textarea id="output-prompt" readonly></textarea>
-            </div>
-            <div class="copy-btn-container">
-                <button id="copy-button" class="btn-copy">복사하기</button>
-            </div>
+            <a id="notebook-link-btn" href="https://notebooklm.google.com/notebook/51be61d0-127d-4688-bb8b-52cefe155d0d" target="_blank" class="link-btn btn-secondary">나이스광장 질의응답 NotebookLM 링크</a>
         </div>
     </div>
 
+    <!-- 토스트 알림을 위한 엘리먼트 -->
     <div id="toast-container" class="toast"></div>
 
     <script>
         const userQuestion = document.getElementById('user-question');
         const clearButton = document.getElementById('clear-button');
         const generateButton = document.getElementById('generate-button');
-        const copyButton = document.getElementById('copy-button');
-        const outputPrompt = document.getElementById('output-prompt');
-        const resultSection = document.getElementById('result-section');
+        const notebookLinkBtn = document.getElementById('notebook-link-btn');
         const toastContainer = document.getElementById('toast-container');
+        let toastTimeout; // 토스트 타이머 관리를 위한 변수
 
         const promptTemplate = `#역할
 소스의 질의응답 데이터중에서 주어진 질의내용에 대한 해결책을 제시해주는 내용을 찾아서 정리해서 알려주는 해결사
@@ -331,12 +297,14 @@ Step 3.~
 #질의내용
 `;
 
+        // 텍스트를 읽을 수 있도록 시간을 4.5초로 넉넉하게 설정
         function showToast(message) {
+            clearTimeout(toastTimeout);
             toastContainer.textContent = message;
             toastContainer.classList.add('show');
-            setTimeout(() => {
+            toastTimeout = setTimeout(() => {
                 toastContainer.classList.remove('show');
-            }, 2500);
+            }, 4500);
         }
 
         function autoResizeTextarea(element) {
@@ -347,17 +315,22 @@ Step 3.~
         userQuestion.addEventListener('input', function() {
             autoResizeTextarea(this);
             clearButton.style.display = this.value.trim() ? 'flex' : 'none';
+            // 입력창을 다시 건드리면 버튼 강조 효과 제거
+            notebookLinkBtn.classList.remove('btn-highlight');
         });
 
         clearButton.addEventListener('click', function() {
             userQuestion.value = '';
             userQuestion.style.height = 'auto';
             this.style.display = 'none';
-            
-            resultSection.style.display = 'none';
-            resultSection.classList.remove('result-fade-in');
             userQuestion.focus();
+            notebookLinkBtn.classList.remove('btn-highlight');
             showToast("입력창이 초기화되었습니다.");
+        });
+
+        // 링크 버튼을 실제로 클릭하면 강조 효과 제거
+        notebookLinkBtn.addEventListener('click', function() {
+            this.classList.remove('btn-highlight');
         });
 
         generateButton.addEventListener('click', function() {
@@ -370,27 +343,23 @@ Step 3.~
             }
 
             const finalPrompt = promptTemplate + userInput;
-            outputPrompt.value = finalPrompt;
+            const successMessage = "✅ 복사 완료! 반짝이는 [NotebookLM 링크]를 누르고 Ctrl+V로 붙여넣으세요.";
             
-            resultSection.style.display = 'block';
-            resultSection.classList.add('result-fade-in');
+            // 링크 버튼에 강조(Pulse) 애니메이션 클래스 추가
+            notebookLinkBtn.classList.add('btn-highlight');
             
-            autoResizeTextarea(outputPrompt);
-            
-            resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            showToast("프롬프트가 아래에 성공적으로 생성되었습니다!");
-        });
-
-        copyButton.addEventListener('click', function() {
-            if (!outputPrompt.value) return;
-
-            navigator.clipboard.writeText(outputPrompt.value).then(() => {
-                showToast("📋 클립보드 복사 완료! NotebookLM에 붙여넣어 보세요.");
+            navigator.clipboard.writeText(finalPrompt).then(() => {
+                showToast(successMessage);
             }).catch(err => {
                 console.error('복사 실패:', err);
-                outputPrompt.select();
+                const hiddenTextArea = document.createElement('textarea');
+                hiddenTextArea.value = finalPrompt;
+                document.body.appendChild(hiddenTextArea);
+                hiddenTextArea.select();
                 document.execCommand('copy');
-                showToast("📋 프롬프트가 복사되었습니다.");
+                document.body.removeChild(hiddenTextArea);
+                
+                showToast(successMessage);
             });
         });
     </script>
