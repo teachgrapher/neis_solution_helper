@@ -241,8 +241,8 @@
             <div class="info-box-title">💡 이용 방법</div>
             <ol>
                 <li>질문하신 선생님의 <strong>질문을 요약해 아래에 입력</strong>하고 [확인]을 누릅니다.</li>
-                <li>프롬프트가 자동으로 복사되면, <strong>[나이스광장 질의응답 NotebookLM 링크]</strong> 버튼을 누릅니다. (2025년 데이터 학습 완료)</li>
-                <li>NotebookLM에 복사된 프롬프트를 붙여넣으면, AI가 답변과 함께 <strong>출처(질의번호 및 제목)</strong>를 찾아줍니다.</li>
+                <li>프롬프트가 자동으로 복사되면, <strong>[나이스광장 질의응답 Gemini Notebook 링크]</strong> 버튼을 누릅니다. (2025년 1월~2026년 7월까지 데이터 학습 완료)</li>
+                <li>Gemini Notebook에 복사된 프롬프트를 붙여넣으면, AI가 답변과 함께 <strong>출처(질의번호 및 제목)</strong>를 찾아줍니다.</li>
                 <li>안내받은 출처 번호로 나이스광장에서 <strong>실제 질의를 빠르게 팩트체크</strong> 해보세요!</li>
             </ol>
         </div>
@@ -254,7 +254,7 @@
 
         <div class="button-group">
             <button id="generate-button" class="btn-primary">확인</button>
-            <a id="notebook-link-btn" href="https://notebooklm.google.com/notebook/51be61d0-127d-4688-bb8b-52cefe155d0d" target="_blank" class="link-btn btn-secondary">나이스광장 질의응답 NotebookLM 링크</a>
+            <a id="notebook-link-btn" href="https://notebooklm.google.com/notebook/51be61d0-127d-4688-bb8b-52cefe155d0d" target="_blank" class="link-btn btn-secondary">나이스광장 질의응답 Gemini Notebook 링크</a>
         </div>
     </div>
 
@@ -386,7 +386,7 @@ Step 3. 학생부 반영 및 2차 전출 자료 전송 (성적/학생부 추가 
             }
 
             const finalPrompt = promptTemplate + userInput;
-            const successMessage = "✅ 복사 완료! 반짝이는 [NotebookLM 링크]를 누르고 Ctrl+V로 붙여넣으세요.";
+            const successMessage = "✅ 복사 완료! 반짝이는 [Gemini Notebook 링크]를 누르고 Ctrl+V로 붙여넣으세요.";
             
             // 링크 버튼에 강조(Pulse) 애니메이션 클래스 추가
             notebookLinkBtn.classList.add('btn-highlight');
